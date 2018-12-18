@@ -15,7 +15,25 @@ void testPatternCount() {
   assert(value == expectedValue);
 }
 
+void testFrequentWords() {
+  string t = "ACGTTGCATGTCGCATGATGCATGAGAGCT";
+  vector<string> expectedValues;
+  expectedValues.push_back("CATG");
+  expectedValues.push_back("GCAT");
+  int counter = 0;
+  vector<string> values = BioInf::frequentWords(t, 4);
+  for (string s : values) {
+    counter++;
+    assert(std::find(expectedValues.begin(), expectedValues.end(), s) != expectedValues.end());
+  }
+
+  assert(counter == expectedValues.size());
+}
+
+
 int main(int argc, char **argv) {
   testPatternCount();
+  testFrequentWords();
+
   return 0;
 }

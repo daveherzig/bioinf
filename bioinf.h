@@ -19,11 +19,12 @@ Copyright 2018, David Herzig (dave.herzig@gmail.com)
 #define BIOINF_H
 
 #include <string>
+#include <vector>
 
 class BioInf {
 public:
   static int patternCount(std::string text, std::string pattern);
-
+  static std::vector<std::string> frequentWords(std::string text, int k);
 
 };
 
