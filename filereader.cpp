@@ -19,6 +19,10 @@ std::vector<std::string> FileReader::readLines(std::string filename) {
   return result;
 }
 
+std::string FileReader::read(std::string filename) {
+  return concat(readLines(filename));
+}
+
 std::string FileReader::concat(std::vector<std::string> lines) {
   // result string
   std::string result = "";
