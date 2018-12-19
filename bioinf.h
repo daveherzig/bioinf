@@ -24,8 +24,9 @@ Copyright 2018, David Herzig (dave.herzig@gmail.com)
 class BioInf {
 public:
   static int patternCount(std::string text, std::string pattern);
+  static std::vector<int> patternMatch(std::string text, std::string pattern);
   static std::vector<std::string> frequentWords(std::string text, int k);
-
+  static std::string reverseComplement(std::string text);
 };
 
 #endif

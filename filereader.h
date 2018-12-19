@@ -25,8 +25,9 @@ class FileReader {
 public:
   static std::vector<std::string> readLines(std::string filename);
   static std::string read(std::string filename);
+  static std::string readFasta(std::string filename);
 private:
-  static std::string concat(std::vector<std::string> lines);
+  static std::string concat(std::vector<std::string> lines, bool isFastaFormat=false);
 };
 
 #endif

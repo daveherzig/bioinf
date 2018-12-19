@@ -23,11 +23,28 @@ std::string FileReader::read(std::string filename) {
   return concat(readLines(filename));
 }
 
-std::string FileReader::concat(std::vector<std::string> lines) {
-  // result string
+std::string FileReader::readFasta(std::string filename) {
+  return concat(readLines(filename), true);
+}
+
+std::string FileReader::concat(std::vector<std::string> lines, bool isFastaFormat) {
+  char skipLineCharacters[] = {'>'};
+  int numberOfSkipLineCharacter = 1;
+
   std::string result = "";
   for (std::string line : lines) {
-    result += line;
+    bool skipLine = false;
+    if (isFastaFormat) {
+      for (int i=0; i<numberOfSkipLineCharacter; i++) {
+        if (line.find(skipLineCharacters[i]) == 0) {
+          skipLine = true;
+          break;
+        }
+      }
+    }
+    if (!skipLine) {
+      result += line;
+    }
   }
   return result;
 }
