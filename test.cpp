@@ -75,6 +75,13 @@ void performanceFrequentWords() {
   }
 }
 
+void performanceFindClumps() {
+  auto start = std::chrono::system_clock::now();
+  string sequence = FileReader::read("data/E_coli.txt");
+  vector<string> value = BioInf::findClumps(sequence, 9, 500, 3);
+  auto stop = std::chrono::system_clock::now();
+}
+
 
 int main(int argc, char **argv) {
   testPatternCount();
@@ -83,13 +90,7 @@ int main(int argc, char **argv) {
   testFindClumps();
 
   //performanceFrequentWords();
-
-  string sequence = FileReader::read("data/E_coli.txt");
-  vector<string> value = BioInf::findClumps(sequence, 9, 500, 3);
-  for (string s : value) {
-    cout << s << " ";
-  }
-  cout << endl;
+  performanceFindClumps();
 
 
 

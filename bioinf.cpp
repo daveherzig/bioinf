@@ -1,7 +1,6 @@
 #include "bioinf.h"
 
 #include <algorithm>
-#include <map>
 #include <set>
 #include <iostream>
 
@@ -10,16 +9,10 @@ std::vector<std::string> BioInf::findClumps(std::string text, int k, int windowL
   int loopRange = text.size()-windowLength+1;
   for (int i=0; i<loopRange; i++) {
     std::string window = text.substr(i, windowLength);
-    std::vector<std::string> tRes = frequentWords(window, k);
-    for (std::string candidate : tRes) {
-      // check if already a solution
-      if (result.find(candidate) != result.end()) {
-        continue;
-      }
-      // check occurence
-      int occurence = patternCount(window, candidate);
-      if (occurence >= minOccurence) {
-        result.insert(candidate);
+    std::map<std::string, int> resultMap = countWords(window, k);
+    for (std::map<std::string, int>::iterator it=resultMap.begin(); it!=resultMap.end(); it++) {
+      if (it->second >= minOccurence) {
+        result.insert(it->first);
       }
     }
   }
@@ -46,17 +39,22 @@ std::vector<int> BioInf::patternMatch(std::string text, std::string pattern) {
   return result;
 }
 
-std::vector<std::string> BioInf::frequentWords(std::string text, int k) {
-  std::map<std::string, int> resultMap;
+std::map<std::string, int> BioInf::countWords(std::string text, int k) {
+  std::map<std::string, int> result;
 
   for (int i=0; i<text.size()-k+1; i++) {
     std::string pattern = text.substr(i, k);
-    if (resultMap.find(pattern) == resultMap.end()) {
-      resultMap[pattern] = 1;
+    if (result.find(pattern) == result.end()) {
+      result[pattern] = 1;
     } else {
-      resultMap[pattern] = resultMap[pattern]+1;
+      result[pattern] = result[pattern]+1;
     }
   }
+  return result;
+}
+
+std::vector<std::string> BioInf::frequentWords(std::string text, int k) {
+  std::map<std::string, int> resultMap = countWords(text, k);
 
   // get the highest value from the map
   int maxValue = -1;

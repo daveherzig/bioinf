@@ -20,8 +20,14 @@ Copyright 2018, David Herzig (dave.herzig@gmail.com)
 
 #include <string>
 #include <vector>
+#include <map>
 
 class BioInf {
+private:
+  /**
+   * This method counts all possible words of length k in text.
+   */
+  static std::map<std::string, int> countWords(std::string text, int k);
 public:
   static int patternCount(std::string text, std::string pattern);
   static std::vector<int> patternMatch(std::string text, std::string pattern);
