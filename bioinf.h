@@ -27,6 +27,7 @@ public:
   static std::vector<int> patternMatch(std::string text, std::string pattern);
   static std::vector<std::string> frequentWords(std::string text, int k);
   static std::string reverseComplement(std::string text);
+  static std::vector<std::string> findClumps(std::string text, int k, int windowLength, int minOccurence);
 };
 
 #endif

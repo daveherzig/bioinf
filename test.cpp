@@ -52,6 +52,18 @@ void testReverseComplement() {
   assert(value == expectedValue);
 }
 
+void testFindClumps() {
+  string sequence = "CGGACTCGACAGATGTGAAGAACGACAATGTGAAGACTCGACACGACAGAGTGAAGAGAAGAGGAAACATTGTAA";
+  vector<string> expectedValues;
+  expectedValues.push_back("CGACA");
+  expectedValues.push_back("GAAGA");
+  vector<string> value = BioInf::findClumps(sequence, 5, 50, 4);
+  for (string s : value) {
+    assert(std::find(expectedValues.begin(), expectedValues.end(), s) != expectedValues.end());
+  }
+  assert(expectedValues.size() == value.size());
+}
+
 void performanceFrequentWords() {
   string sequence = FileReader::read("data/mm_ref_GRCm38.p4_chr1.fa");
   cout << "Sequence Length: " << sequence.size() << endl;
@@ -68,13 +80,18 @@ int main(int argc, char **argv) {
   testPatternCount();
   testFrequentWords();
   testReverseComplement();
+  testFindClumps();
 
   //performanceFrequentWords();
-  string s = FileReader::readFasta("data/Thermotoga_petrophila.fa");
-  vector<string> result = BioInf::frequentWords(s, 9);
-  for (string s : result) {
-    cout << s << endl;
+
+  string sequence = FileReader::read("data/E_coli.txt");
+  vector<string> value = BioInf::findClumps(sequence, 9, 500, 3);
+  for (string s : value) {
+    cout << s << " ";
   }
+  cout << endl;
+
+
 
   return 0;
 }

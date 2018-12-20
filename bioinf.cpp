@@ -2,7 +2,33 @@
 
 #include <algorithm>
 #include <map>
+#include <set>
 #include <iostream>
+
+std::vector<std::string> BioInf::findClumps(std::string text, int k, int windowLength, int minOccurence) {
+  std::set<std::string> result;
+  int loopRange = text.size()-windowLength+1;
+  for (int i=0; i<loopRange; i++) {
+    std::string window = text.substr(i, windowLength);
+    std::vector<std::string> tRes = frequentWords(window, k);
+    for (std::string candidate : tRes) {
+      // check if already a solution
+      if (result.find(candidate) != result.end()) {
+        continue;
+      }
+      // check occurence
+      int occurence = patternCount(window, candidate);
+      if (occurence >= minOccurence) {
+        result.insert(candidate);
+      }
+    }
+  }
+
+  // convert set to vector
+  std::vector<std::string> vResult;
+  vResult.assign(result.begin(), result.end());
+  return vResult;
+}
 
 int BioInf::patternCount(std::string text, std::string pattern) {
   return patternMatch(text, pattern).size();
