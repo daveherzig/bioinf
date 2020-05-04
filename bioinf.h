@@ -34,6 +34,7 @@ public:
   static std::vector<std::string> frequentWords(std::string text, int k);
   static std::string reverseComplement(std::string text);
   static std::vector<std::string> findClumps(std::string text, int k, int windowLength, int minOccurence);
+  static std::vector<std::string> kmer(std::string text, int k);
 };
 
 #endif

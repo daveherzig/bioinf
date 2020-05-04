@@ -4,6 +4,16 @@
 #include <set>
 #include <iostream>
 
+std::vector<std::string> BioInf::kmer(std::string text, int k) {
+  std::vector<std::string> result;
+  for (int i=0; i<text.size()-k+1; i++) {
+    std::string v = text.substr(i, k);
+	result.push_back(v);
+  }
+  
+  return result;
+}
+
 std::vector<std::string> BioInf::findClumps(std::string text, int k, int windowLength, int minOccurence) {
   std::set<std::string> result;
   int loopRange = text.size()-windowLength+1;

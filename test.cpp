@@ -5,6 +5,7 @@
 #include <map>
 #include <cassert>
 #include <chrono>
+#include <algorithm>
 using namespace std;
 
 class TimeUtil {
@@ -13,6 +14,13 @@ private:
 public:
   static void start();
 };
+
+void testKmer() {
+  string t = "CTATTTGCTCTA";
+  std::vector<std::string> kmers = BioInf::kmer(t, 3);
+  int expectedValue = 10;
+  assert(kmers.size() == expectedValue);
+}
 
 /**
  * Test method for the pattern count method.
@@ -23,12 +31,15 @@ void testPatternCount() {
 
   int expectedValue = 40;
   int value = BioInf::patternCount(t, p);
-  vector<int> indices = BioInf::patternMatch(t, p);
+  std::vector<int> indices = BioInf::patternMatch(t, p);
 
   assert(value == expectedValue);
   assert(indices.size() == expectedValue);
 }
 
+/**
+ * Test method for finding the most frequent word.
+ */
 void testFrequentWords() {
   string t = "ACGTTGCATGTCGCATGATGCATGAGAGCT";
   vector<string> expectedValues;
@@ -84,13 +95,14 @@ void performanceFindClumps() {
 
 
 int main(int argc, char **argv) {
+  testKmer();
   testPatternCount();
   testFrequentWords();
   testReverseComplement();
   testFindClumps();
 
   //performanceFrequentWords();
-  performanceFindClumps();
+  //performanceFindClumps();
 
 
 
