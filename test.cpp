@@ -1,5 +1,23 @@
+/***
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+Copyright 2020, David Herzig (dave.herzig@gmail.com)
+***/
+
 #include "bioinf.h"
 #include "filereader.h"
+#include "util.h"
 
 #include <iostream>
 #include <map>
@@ -8,18 +26,14 @@
 #include <algorithm>
 using namespace std;
 
-class TimeUtil {
-private:
-  static std::map<std::string, double> results;
-public:
-  static void start();
-};
-
 void testKmer() {
   string t = "CTATTTGCTCTA";
-  std::vector<std::string> kmers = BioInf::kmer(t, 3);
+  int kmerLength = 3;
+  std::vector<std::string> kmers = BioInf::kmer(t, kmerLength);
   int expectedValue = 10;
   assert(kmers.size() == expectedValue);
+  string lastKmer = t.substr(t.size()-kmerLength, kmerLength);
+  assert(lastKmer == kmers.at(kmers.size()-1));
 }
 
 /**
@@ -93,18 +107,25 @@ void performanceFindClumps() {
   auto stop = std::chrono::system_clock::now();
 }
 
+void testSplitSequence() {
+  string sequence = "ACGTTGCATGTCGCATGATGCATGAGAGCT";
+  vector<string> values = Util::splitSequence(sequence, 5);
+  for (string v : values) {
+    cout << v << endl;
+  }
+}
 
 int main(int argc, char **argv) {
-  testKmer();
-  testPatternCount();
-  testFrequentWords();
-  testReverseComplement();
-  testFindClumps();
+  testSplitSequence();
+
+  //testKmer();
+  //testPatternCount();
+  //testFrequentWords();
+  //testReverseComplement();
+  //testFindClumps();
 
   //performanceFrequentWords();
   //performanceFindClumps();
-
-
 
   return 0;
 }

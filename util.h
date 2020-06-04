@@ -15,40 +15,20 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 Copyright 2020, David Herzig (dave.herzig@gmail.com)
 ***/
 
-#include "log.h"
+#ifndef UTIL_H
+#define UTIL_H
 
-int Log::level = 0;
-int Log::output = CONOSLE;
-std::string Log::filename = "output.log";
+#include <string>
+#include <vector>
+#include <array>
 
-void Log::setLevel(int level) {
-  Log::level = level;
-}
+class Util {
+private:
+   static std::vector<bool> getStartIndices(std::string sequence, int length);
+public:
 
-void Log::setFilename(std::string filename) {
+  static std::vector<std::string> splitSequence(std::string sequence, int length);
 
-}
+};
 
-void Log::debug(std::string msg) {
-
-}
-
-void Log::info(std::string msg) {
-
-}
-
-void Log::warning(std::string msg) {
-
-}
-
-void Log::error(std::string msg) {
-
-}
-
-void Log::fatal(std::string msg) {
-
-}
-
-void Log::printMessage(std::string msg) {
-
-}
+#endif

@@ -12,7 +12,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Copyright 2018, David Herzig (dave.herzig@gmail.com)
+Copyright 2020, David Herzig (dave.herzig@gmail.com)
 ***/
 
 #ifndef LOG_H
