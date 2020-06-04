@@ -27,6 +27,10 @@ std::vector<std::string> FileReader::readLines(std::string filename) {
 
   // open file
   std::ifstream infile(filename);
+  if (!infile.is_open()) {
+    std::cerr<<"unable to open file";
+    return result;
+  }
   std::string line;
   while (std::getline(infile, line)) {
     // strip newline

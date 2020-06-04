@@ -17,6 +17,7 @@ Copyright 2020, David Herzig (dave.herzig@gmail.com)
 
 #include "bioinf.h"
 #include "filereader.h"
+#include "filewriter.h"
 #include "util.h"
 
 #include <iostream>
@@ -108,11 +109,15 @@ void performanceFindClumps() {
 }
 
 void testSplitSequence() {
-  string sequence = "ACGTTGCATGTCGCATGATGCATGAGAGCT";
-  vector<string> values = Util::splitSequence(sequence, 5);
-  for (string v : values) {
-    cout << v << endl;
-  }
+  //string sequence = "ACGTTGCATGTCGCATGATGCATGAGAGCT";
+  string sequence = FileReader::read("data/Vibrio_cholerae.txt");
+  vector<string> values = Util::splitSequence(sequence, 50);
+
+  //for (string v : values) {
+  //  cout << v << endl;
+  //}
+
+  FileWriter::writeLines(values, "reads.txt");
 }
 
 int main(int argc, char **argv) {
