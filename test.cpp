@@ -110,14 +110,32 @@ void performanceFindClumps() {
 
 void testSplitSequence() {
   //string sequence = "ACGTTGCATGTCGCATGATGCATGAGAGCT";
+  //const int length = 6;
   string sequence = FileReader::read("data/Vibrio_cholerae.txt");
-  vector<string> values = Util::splitSequence(sequence, 50);
+  const int length = 50;
+  vector<string> values = Util::splitSequence(sequence, length);
+  //FileWriter::writeLines(values, "reads.txt");
 
-  //for (string v : values) {
-  //  cout << v << endl;
-  //}
+  // check for the first and last substring
+  string first = sequence.substr(0, length);
+  string last = sequence.substr(sequence.size() - length, length);
 
-  FileWriter::writeLines(values, "reads.txt");
+  bool firstFound = false;
+  bool lastFound = false;
+  for (string s : values) {
+    if (s == first) {
+      firstFound = true;
+    }
+    else if (s == last) {
+      lastFound = true;
+    }
+    if (firstFound && lastFound) {
+      break;
+    }
+  }
+  assert(firstFound);
+  assert(lastFound);
+
 }
 
 int main(int argc, char **argv) {
