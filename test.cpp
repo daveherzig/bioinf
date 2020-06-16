@@ -19,6 +19,7 @@ Copyright 2020, David Herzig (dave.herzig@gmail.com)
 #include "filereader.h"
 #include "filewriter.h"
 #include "util.h"
+#include "debrujin.h"
 
 #include <iostream>
 #include <map>
@@ -26,6 +27,15 @@ Copyright 2020, David Herzig (dave.herzig@gmail.com)
 #include <chrono>
 #include <algorithm>
 using namespace std;
+
+string createRandomDNA(int length) {
+  char alphabet[] = {'A', 'C', 'G', 'T'};
+  string result;
+  for (int i=0; i<length; i++) {
+    result.push_back(alphabet[rand()%4]);
+  }
+  return result;
+}
 
 void testKmer() {
   string t = "CTATTTGCTCTA";
@@ -138,9 +148,48 @@ void testSplitSequence() {
 
 }
 
-int main(int argc, char **argv) {
-  testSplitSequence();
 
+
+void testGenomeAssembly() {
+  string sequence = "TAATGCCATGGGATGTT";
+  int kmerLength = 3;
+  //string sequence = "TGACAGGGACCCTCTTGTATAGCAGCAGTTGTGCATTTGTTGCCACTCATAGCCTTCCGATGGAGAGAAGCGCGGGCCACTAGAAGATAATGTCGGGCCCTTGAGCGCGCCAAGCCCCAGGCATTTGTAGGCAGGTTTCCT";
+  //int kmerLength = 6;
+  std::vector<std::string> kmers = BioInf::kmer(sequence, kmerLength);
+
+  // store kmers in file
+  //FileWriter::writeLines(kmers, "reads.txt");
+
+  string result = BioInf::assemblyGenome(kmers);
+  assert(sequence == result);
+
+  // brute force testing
+  const int N = 10;
+  for (int i=0; i<N; i++) {
+    sequence = createRandomDNA(rand() % 100 + 100);
+    kmerLength = rand() % 10 + 3;
+    kmers = BioInf::kmer(sequence, kmerLength);
+    result = BioInf::assemblyGenome(kmers);
+    assert(sequence == result);
+  }
+}
+
+void performanceGenomeAssembly() {
+  auto start = std::chrono::system_clock::now();
+  string sequence = FileReader::read("data/E_coli.txt");
+  int kmerLength = 20;
+  std::vector<std::string> kmers = BioInf::kmer(sequence, kmerLength);
+  string result = BioInf::assemblyGenome(kmers);
+  assert(sequence == result);
+  auto stop = std::chrono::system_clock::now();
+}
+
+int main(int argc, char **argv) {
+
+  testGenomeAssembly();
+  performanceGenomeAssembly();
+
+  //testSplitSequence();
   //testKmer();
   //testPatternCount();
   //testFrequentWords();

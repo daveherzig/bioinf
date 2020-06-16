@@ -15,29 +15,40 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 Copyright 2020, David Herzig (dave.herzig@gmail.com)
 ***/
 
-#ifndef BIOINF_H
-#define BIOINF_H
+#ifndef DEBRUJIN_H
+#define DEBRUJIN_H
 
 #include <string>
 #include <vector>
 #include <map>
 
-class BioInf {
-private:
-  /**
-   * This method counts all possible words of length k in text.
-   */
-  static std::map<std::string, int> countWords(std::string text, int k);
+class NodeInfo {
 public:
-  static int patternCount(std::string text, std::string pattern);
-  static std::vector<int> patternMatch(std::string text, std::string pattern);
-  static std::vector<std::string> frequentWords(std::string text, int k);
-  static std::string reverseComplement(std::string text);
-  static std::vector<std::string> findClumps(std::string text, int k, int windowLength, int minOccurence);
-  static std::vector<std::string> kmer(std::string text, int k);
-  static std::string assemblyGenome(std::vector<std::string> kmers);
+  int incoming;
+  int outgoing;
+  NodeInfo();
+};
 
+class DeBrujinGraph {
+private:
+  std::map<std::string, std::vector<std::string>> graph;
+  std::map<std::string, NodeInfo> nodes;
 
+  void init(std::vector<std::string> kmers);
+  void dfs(
+    std::vector<std::string> & solution,
+    std::map<std::string, bool> & visitedNodes,
+    std::map<std::string, std::vector<bool>> & visitedEdges,
+    std::string currentNode);
+
+  std::string startNode;
+  std::string endNode;
+
+public:
+  DeBrujinGraph(std::vector<std::string> kmers);
+  bool hasEulerianPath();
+  std::vector<std::string> eulerianPath();
+  void print();
 };
 
 #endif

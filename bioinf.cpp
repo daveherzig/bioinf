@@ -17,6 +17,7 @@ Copyright 2020, David Herzig (dave.herzig@gmail.com)
 
 #include "bioinf.h"
 #include "filereader.h"
+#include "debrujin.h"
 
 #include <algorithm>
 #include <set>
@@ -33,8 +34,23 @@ std::vector<std::string> BioInf::kmer(std::string text, int k) {
   return result;
 }
 
-void BioInf::createDeBruijnGraph(std::vector<std::string> kmers) {
+std::string BioInf::assemblyGenome(std::vector<std::string> kmers) {
+  DeBrujinGraph dbg(kmers);
+  std::vector<std::string> eulerianPath = dbg.eulerianPath();
+  std::string result = "";
 
+  if (eulerianPath.size() == 0) {
+    return result;
+  }
+
+  result = eulerianPath[0];
+  for (int i=1; i<eulerianPath.size(); i++) {
+    std::string node = eulerianPath[i];
+    char ch = node[node.size()-1];
+    result.push_back(ch);
+  }
+
+  return result;
 }
 
 std::vector<std::string> BioInf::findClumps(std::string text, int k, int windowLength, int minOccurence) {
