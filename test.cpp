@@ -21,11 +21,14 @@ Copyright 2020, David Herzig (dave.herzig@gmail.com)
 #include "util.h"
 #include "debrujin.h"
 
+#include <boost/log/trivial.hpp>
+
 #include <iostream>
 #include <map>
 #include <cassert>
 #include <chrono>
 #include <algorithm>
+#include <random>
 using namespace std;
 
 string createRandomDNA(int length) {
@@ -148,29 +151,73 @@ void testSplitSequence() {
 
 }
 
-
+void bruteForceGenomeAssembly() {
+  string sequence;
+  int kmerLength;
+  const int N = 10;
+  for (int i=0; i<N; i++) {
+    sequence = createRandomDNA(rand() % 100 + 100);
+    kmerLength = rand() % 10 + 3;
+    std::vector<std::string> kmers = BioInf::kmer(sequence, kmerLength);
+    sort(kmers.begin(), kmers.end());
+    string result = BioInf::assemblyGenome(kmers);
+    cout << kmerLength << endl;
+    cout << sequence << endl;
+    cout << result << endl;
+    assert(sequence == result);
+  }
+}
 
 void testGenomeAssembly() {
-  string sequence = "TAATGCCATGGGATGTT";
-  int kmerLength = 3;
+  //string sequence = "TAATGCCATGGGATGTT";
+  //int kmerLength = 3;
   //string sequence = "TGACAGGGACCCTCTTGTATAGCAGCAGTTGTGCATTTGTTGCCACTCATAGCCTTCCGATGGAGAGAAGCGCGGGCCACTAGAAGATAATGTCGGGCCCTTGAGCGCGCCAAGCCCCAGGCATTTGTAGGCAGGTTTCCT";
   //int kmerLength = 6;
+  string sequence = "TGACAGGGACCCTCTTGTATAGCAGCAGTTGTGCATTTGTTGCCACTCATAGCCTTCCGATGGAGAGAAGCGCGGGCCACTAGAAGATAATGTCGGGCCCTTGAGCGCGCCAAGCCCCAGGCATTTGTAGGCAGGTTTCCT";
+  int kmerLength = 10;
   std::vector<std::string> kmers = BioInf::kmer(sequence, kmerLength);
+  FileWriter::writeLines(kmers, "reads_unsorted.txt");
+  sort(kmers.begin(), kmers.end());
+  FileWriter::writeLines(kmers, "reads_sorted.txt");
 
   // store kmers in file
   //FileWriter::writeLines(kmers, "reads.txt");
 
   string result = BioInf::assemblyGenome(kmers);
   assert(sequence == result);
+}
 
-  // brute force testing
-  const int N = 10;
-  for (int i=0; i<N; i++) {
-    sequence = createRandomDNA(rand() % 100 + 100);
-    kmerLength = rand() % 10 + 3;
-    kmers = BioInf::kmer(sequence, kmerLength);
-    result = BioInf::assemblyGenome(kmers);
-    assert(sequence == result);
+void testGenomeAssemblyMinimalKMerLength() {
+  string sequence = FileReader::read("data/Vibrio_cholerae.txt");
+  //string sequence = "TGACAGGGACCCTCTTGTATAGCAGCAGTTGTGCATTTGTTGCCACTCATAGCCTTCCGATGGAGAGAAGCGCGGGCCACTAGAAGATAATGTCGGGCCCTTGAGCGCGCCAAGCCCCAGGCATTTGTAGGCAGGTTTCCT";
+  int kmerLength;
+  int minLength = 3;
+  int maxLength = 100;
+  const int NUMBER_OF_TESTS_PER_LENGTH = 10;
+  for (int i=minLength; i<=maxLength; i++) {
+    kmerLength = i;
+    BOOST_LOG_TRIVIAL(debug) << "kmerLength: " << i << ": ";
+    std::vector<std::string> kmers = BioInf::kmer(sequence, kmerLength);
+    cout << "TESTPOINT 1" << endl;
+    sort(kmers.begin(), kmers.end());
+    cout << "TESTPOINT 2" << endl;
+    auto rng = std::default_random_engine {};
+    bool incorrectResult = false;
+    cout << "TESTPOINT 3" << endl;
+    for (int j=0; j<NUMBER_OF_TESTS_PER_LENGTH; j++) {
+      cout << "TESTPOINT 3.1" << endl;
+      string result = BioInf::assemblyGenome(kmers);
+      cout << "TESTPOINT 3.2" << endl;
+      if (result != sequence) {
+        cout << "TESTPOINT 4" << endl;
+        incorrectResult = true;
+        break;
+      }
+      cout << "TESTPOINT 5" << endl;
+      std::shuffle(std::begin(kmers), std::end(kmers), rng);
+    }
+    cout << (incorrectResult ? "INCORRECT" : "CORRECT") << endl;
+    cout << i << endl;
   }
 }
 
@@ -186,8 +233,10 @@ void performanceGenomeAssembly() {
 
 int main(int argc, char **argv) {
 
-  testGenomeAssembly();
-  performanceGenomeAssembly();
+  testGenomeAssemblyMinimalKMerLength();
+  //testGenomeAssembly();
+  //bruteForceGenomeAssembly();
+  //performanceGenomeAssembly();
 
   //testSplitSequence();
   //testKmer();

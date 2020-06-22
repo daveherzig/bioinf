@@ -1,8 +1,29 @@
 # C++ Bioinformatics Library
 April-2020, David Herzig
-Version 0.1
+Version 0.2
 
 ## Compile Command
 ```
-g++ -std=c++14 bioinf.cpp filereader.cpp filewriter.cpp log.cpp test.cpp util.cpp debrujin.cpp
+g++ -std=c++14 -I D:\boost_1_73_0 bioinf.cpp filereader.cpp filewriter.cpp log.cpp test.cpp util.cpp debrujin.cpp
 ```
+
+## Version History
+0.1, December 2019
+- Basic Ideas
+
+0.2, June 2020
+- Included Boost Library 1.73
+- Genome Assembly
+
+0.3, July 2020
+- Levenstein Distance
+
+
+## Boost Library (some hints to build boost on windows)
+Here are some information on how the Boost library is used on the Windows
+environment:
+1. Download boost from: https://www.boost.org/users/download/
+2. Execute command described on: https://www.boost.org/doc/libs/1_73_0/more/getting_started/windows.html
+(see chapter build binaries)
+3. Create the b2.exe (as described)
+4. tools\build\b2 install --toolset=gcc (from root directory)
