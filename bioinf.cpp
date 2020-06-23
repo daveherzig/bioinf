@@ -19,6 +19,8 @@ Copyright 2020, David Herzig (dave.herzig@gmail.com)
 #include "filereader.h"
 #include "debrujin.h"
 
+#include <boost/log/trivial.hpp>
+
 #include <algorithm>
 #include <set>
 #include <iostream>
@@ -35,8 +37,25 @@ std::vector<std::string> BioInf::kmer(std::string text, int k) {
 }
 
 std::string BioInf::assemblyGenome(std::vector<std::string> kmers) {
+  clock_t start, stop;
+  double usedTime;
+
+  // create debrujin graph
+  BOOST_LOG_TRIVIAL(debug) << "building debrujin graph...";
+  start = clock();
   DeBrujinGraph dbg(kmers);
+  stop = clock();
+  usedTime = (double)(stop - start)/CLOCKS_PER_SEC;
+  BOOST_LOG_TRIVIAL(debug) << "building debrujin graph: " << usedTime << "s";
+
+  // create eulerian path
+  BOOST_LOG_TRIVIAL(debug) << "retrieve eulerian path...";
+  start = clock();
   std::vector<std::string> eulerianPath = dbg.eulerianPath();
+  stop = clock();
+  usedTime = (double)(stop - start)/CLOCKS_PER_SEC;
+  BOOST_LOG_TRIVIAL(debug) << "retrieve eulerian path: " << usedTime << "s";
+
   std::string result = "";
 
   if (eulerianPath.size() == 0) {

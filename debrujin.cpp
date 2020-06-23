@@ -17,6 +17,8 @@ Copyright 2020, David Herzig (dave.herzig@gmail.com)
 
 #include "debrujin.h"
 
+#include <boost/log/trivial.hpp>
+
 #include <iostream>
 #include <cassert>
 #include <cstdlib>
@@ -51,18 +53,17 @@ void DeBrujinGraph::print() {
   for (it=graph.begin(); it!=graph.end(); it++) {
     std::string sourceNode = it->first;
     std::vector<std::string> neighbours = it->second;
-    std::cout << sourceNode << "\t";
+    BOOST_LOG_TRIVIAL(debug) << sourceNode << "\t";
     for (int i=0; i<neighbours.size(); i++) {
-      std::cout << neighbours.at(i) << ", ";
+      BOOST_LOG_TRIVIAL(debug) << neighbours.at(i) << ", ";
     }
-    std::cout << std::endl;
   }
   // print node information
   std::map<std::string, NodeInfo>::iterator nodeInfoIt;
   for (nodeInfoIt=nodes.begin(); nodeInfoIt!=nodes.end(); nodeInfoIt++) {
     std::string nodeName = nodeInfoIt->first;
     NodeInfo nodeInfo = nodeInfoIt->second;
-    std::cout << nodeName << ", " << "incoming: " << nodeInfo.incoming << ", outgoing: " << nodeInfo.outgoing << std::endl;
+    BOOST_LOG_TRIVIAL(debug) << nodeName << ", " << "incoming: " << nodeInfo.incoming << ", outgoing: " << nodeInfo.outgoing;
   }
 }
 
@@ -102,6 +103,8 @@ std::vector<std::string> DeBrujinGraph::eulerianPath() {
 
   bool hep = hasEulerianPath();
 
+  BOOST_LOG_TRIVIAL(debug) << "has eulerian path: " << hep;
+
   if (!hep) {
     return result;
   }
@@ -114,6 +117,7 @@ std::vector<std::string> DeBrujinGraph::eulerianPath() {
   std::vector<std::string> nodeNames;
 
   // fill in initial values for all nodes
+  BOOST_LOG_TRIVIAL(debug) << "fill up initial values";
   std::map<std::string, std::vector<std::string>>::iterator gIt;
   for (gIt=graph.begin(); gIt!=graph.end(); gIt++) {
     std::string nodename = gIt->first;
@@ -127,9 +131,8 @@ std::vector<std::string> DeBrujinGraph::eulerianPath() {
     visitedEdges[nodename] = edges;
   }
 
-  //std::cout << "StartNode: " << startNode << std::endl;
-
   // check if start node is set
+  BOOST_LOG_TRIVIAL(debug) << "check start node: " << startNode;
   if (startNode == "") {
     // choose a random start node
     bool zeroDegreeNode = true;
@@ -142,8 +145,11 @@ std::vector<std::string> DeBrujinGraph::eulerianPath() {
       }
     }
   }
+  BOOST_LOG_TRIVIAL(debug) << "start node: " << startNode;
 
   // start modified DFS
+  BOOST_LOG_TRIVIAL(debug) << "start dfs...";
+  recursiveCallCounter = 0;
   dfs(result, visitedNodes, visitedEdges, startNode);
 
   std::reverse(result.begin(), result.end());
@@ -157,8 +163,10 @@ void DeBrujinGraph::dfs(
   std::map<std::string, std::vector<bool>> & visitedEdges,
   std::string currentNode) {
 
+  recursiveCallCounter++;
+
   // debug output
-  //std::cout << "Current Node: " << currentNode << std::endl;
+  BOOST_LOG_TRIVIAL(debug) << "Current Node: " << currentNode << ", Call: " << recursiveCallCounter;
 
   // move forward with dfs until the end node
   std::vector<std::string> & outgoingEdges = graph[currentNode];

@@ -34,6 +34,8 @@ private:
   std::map<std::string, std::vector<std::string>> graph;
   std::map<std::string, NodeInfo> nodes;
 
+  int recursiveCallCounter;
+
   void init(std::vector<std::string> kmers);
   void dfs(
     std::vector<std::string> & solution,

@@ -189,35 +189,30 @@ void testGenomeAssembly() {
 
 void testGenomeAssemblyMinimalKMerLength() {
   string sequence = FileReader::read("data/Vibrio_cholerae.txt");
+  //string sequence = FileReader::read("data/E_coli.txt");
   //string sequence = "TGACAGGGACCCTCTTGTATAGCAGCAGTTGTGCATTTGTTGCCACTCATAGCCTTCCGATGGAGAGAAGCGCGGGCCACTAGAAGATAATGTCGGGCCCTTGAGCGCGCCAAGCCCCAGGCATTTGTAGGCAGGTTTCCT";
+  //string sequence = createRandomDNA(50000);
   int kmerLength;
-  int minLength = 3;
-  int maxLength = 100;
-  const int NUMBER_OF_TESTS_PER_LENGTH = 10;
+  int minLength = 50;
+  int maxLength = 51;
+  const int NUMBER_OF_TESTS_PER_LENGTH = 4;
   for (int i=minLength; i<=maxLength; i++) {
     kmerLength = i;
-    BOOST_LOG_TRIVIAL(debug) << "kmerLength: " << i << ": ";
+    BOOST_LOG_TRIVIAL(debug) << "kmerLength: " << i;
     std::vector<std::string> kmers = BioInf::kmer(sequence, kmerLength);
-    cout << "TESTPOINT 1" << endl;
     sort(kmers.begin(), kmers.end());
-    cout << "TESTPOINT 2" << endl;
     auto rng = std::default_random_engine {};
     bool incorrectResult = false;
-    cout << "TESTPOINT 3" << endl;
     for (int j=0; j<NUMBER_OF_TESTS_PER_LENGTH; j++) {
-      cout << "TESTPOINT 3.1" << endl;
       string result = BioInf::assemblyGenome(kmers);
-      cout << "TESTPOINT 3.2" << endl;
       if (result != sequence) {
-        cout << "TESTPOINT 4" << endl;
         incorrectResult = true;
         break;
       }
-      cout << "TESTPOINT 5" << endl;
       std::shuffle(std::begin(kmers), std::end(kmers), rng);
     }
-    cout << (incorrectResult ? "INCORRECT" : "CORRECT") << endl;
-    cout << i << endl;
+    BOOST_LOG_TRIVIAL(debug) << (incorrectResult ? "INCORRECT" : "CORRECT");
+    BOOST_LOG_TRIVIAL(debug) << "kmerLength: " << i;
   }
 }
 
