@@ -44,6 +44,11 @@ private:
     std::map<std::string, bool> & visitedNodes,
     std::map<std::string, std::vector<bool>> & visitedEdges,
     std::string currentNode);
+  void dfsIterative(
+    std::vector<std::string> & solution,
+    std::map<std::string, bool> & visitedNodes,
+    std::map<std::string, std::vector<bool>> & visitedEdges,
+    std::string currentNode);
 
   std::string startNode;
   std::string endNode;

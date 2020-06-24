@@ -39,8 +39,9 @@ void DeBrujinGraph::init(std::vector<std::string> & kmers) {
     targetNodeInfo->incoming++;
 
     // check if source node is already available in graph
-    std::vector<int> * neighbours = &(graph[sourceNode]);
-    neighbours->push_back(targetNodeInfo->id);
+    std::vector<int> * neighboursSourceNode = &(graph[sourceNode]);
+    neighboursSourceNode->push_back(targetNodeInfo->id);
+    std::vector<int> * neighboursTargetNode = &(graph[targetNode]);
 
     // update id table
     ids[sourceNodeInfo->id] = sourceNode;
@@ -50,6 +51,8 @@ void DeBrujinGraph::init(std::vector<std::string> & kmers) {
 
 DeBrujinGraph::DeBrujinGraph(std::vector<std::string> kmers) : startNode(""), endNode("") {
   init(kmers);
+  assert(graph.size() == ids.size());
+  assert(ids.size() == nodes.size());
 }
 
 void DeBrujinGraph::print() {
@@ -196,6 +199,14 @@ void DeBrujinGraph::dfs(
 
   // no more unvisited edges from that node
   solution.push_back(currentNode);
+}
+
+void DeBrujinGraph::dfsIterative(
+  std::vector<std::string> & solution,
+  std::map<std::string, bool> & visitedNodes,
+  std::map<std::string, std::vector<bool>> & visitedEdges,
+  std::string currentNode) {
+
 }
 
 NodeInfo::NodeInfo() : incoming(0), outgoing(0) {

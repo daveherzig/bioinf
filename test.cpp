@@ -217,7 +217,7 @@ void testGenomeAssemblyMinimalKMerLength() {
 }
 
 void testGenomeAssemblyMaximalLength() {
-  int startSize = 40000;
+  int startSize = 35000;
   const int kmerLength = 50;
   while (true) {
     string sequence = createRandomDNA(startSize);
