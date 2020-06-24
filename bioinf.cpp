@@ -45,6 +45,7 @@ std::string BioInf::assemblyGenome(std::vector<std::string> kmers) {
   start = clock();
   DeBrujinGraph dbg(kmers);
   stop = clock();
+  //dbg.print();
   usedTime = (double)(stop - start)/CLOCKS_PER_SEC;
   BOOST_LOG_TRIVIAL(debug) << "building debrujin graph: " << usedTime << "s";
 

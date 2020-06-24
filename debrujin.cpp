@@ -16,6 +16,7 @@ Copyright 2020, David Herzig (dave.herzig@gmail.com)
 ***/
 
 #include "debrujin.h"
+#include "util.h"
 
 #include <boost/log/trivial.hpp>
 
@@ -24,22 +25,26 @@ Copyright 2020, David Herzig (dave.herzig@gmail.com)
 #include <cstdlib>
 #include <algorithm>
 
-void DeBrujinGraph::init(std::vector<std::string> kmers) {
+void DeBrujinGraph::init(std::vector<std::string> & kmers) {
   int length = kmers.at(0).size() - 1;
 
   for (std::string kmer : kmers) {
     std::string sourceNode = kmer.substr(0, length);
     std::string targetNode = kmer.substr(1, length);
 
-    // check if source node is already available in graph
-    std::vector<std::string> * neighbours = &(graph[sourceNode]);
-    neighbours->push_back(targetNode);
-
     // get the node information of the source and target node
     NodeInfo * sourceNodeInfo = &(nodes[sourceNode]);
     sourceNodeInfo->outgoing++;
     NodeInfo * targetNodeInfo = &(nodes[targetNode]);
     targetNodeInfo->incoming++;
+
+    // check if source node is already available in graph
+    std::vector<int> * neighbours = &(graph[sourceNode]);
+    neighbours->push_back(targetNodeInfo->id);
+
+    // update id table
+    ids[sourceNodeInfo->id] = sourceNode;
+    ids[targetNodeInfo->id] = targetNode;
   }
 }
 
@@ -49,14 +54,16 @@ DeBrujinGraph::DeBrujinGraph(std::vector<std::string> kmers) : startNode(""), en
 
 void DeBrujinGraph::print() {
   // print graph information
-  std::map<std::string, std::vector<std::string>>::iterator it;
+  std::map<std::string, std::vector<int>>::iterator it;
   for (it=graph.begin(); it!=graph.end(); it++) {
     std::string sourceNode = it->first;
-    std::vector<std::string> neighbours = it->second;
-    BOOST_LOG_TRIVIAL(debug) << sourceNode << "\t";
+    std::vector<int> neighbours = it->second;
+    std::string neighboursStr = "";
     for (int i=0; i<neighbours.size(); i++) {
-      BOOST_LOG_TRIVIAL(debug) << neighbours.at(i) << ", ";
+      neighboursStr.append(std::to_string(neighbours.at(i)));
+      neighboursStr.append(", ");
     }
+    BOOST_LOG_TRIVIAL(debug) << sourceNode << "\t" << neighboursStr;
   }
   // print node information
   std::map<std::string, NodeInfo>::iterator nodeInfoIt;
@@ -118,12 +125,12 @@ std::vector<std::string> DeBrujinGraph::eulerianPath() {
 
   // fill in initial values for all nodes
   BOOST_LOG_TRIVIAL(debug) << "fill up initial values";
-  std::map<std::string, std::vector<std::string>>::iterator gIt;
+  std::map<std::string, std::vector<int>>::iterator gIt;
   for (gIt=graph.begin(); gIt!=graph.end(); gIt++) {
     std::string nodename = gIt->first;
     nodeNames.push_back(nodename);
     visitedNodes[nodename] = false;
-    std::vector<std::string> neighbours = gIt->second;
+    std::vector<int> neighbours = gIt->second;
     std::vector<bool> edges(neighbours.size());
     for (int i=0; i<edges.size(); i++) {
       edges[i] = false;
@@ -157,6 +164,7 @@ std::vector<std::string> DeBrujinGraph::eulerianPath() {
   return result;
 }
 
+// TODO: Calling this method 34000 times causes a segmentation fault
 void DeBrujinGraph::dfs(
   std::vector<std::string> & solution,
   std::map<std::string, bool> & visitedNodes,
@@ -166,19 +174,20 @@ void DeBrujinGraph::dfs(
   recursiveCallCounter++;
 
   // debug output
-  BOOST_LOG_TRIVIAL(debug) << "Current Node: " << currentNode << ", Call: " << recursiveCallCounter;
+  //BOOST_LOG_TRIVIAL(debug) << "Current Node: " << currentNode << ", Call: " << recursiveCallCounter;
 
   // move forward with dfs until the end node
-  std::vector<std::string> & outgoingEdges = graph[currentNode];
+  std::vector<int> & outgoingEdgesIds = graph[currentNode];
   std::vector<bool> & visitedOutgoingEdges = visitedEdges[currentNode];
 
   // both vectors need to have the same size
-  assert(outgoingEdges.size() == visitedOutgoingEdges.size());
+  assert(outgoingEdgesIds.size() == visitedOutgoingEdges.size());
 
   // loop through all neighbours & edges
-  for (int i=0; i<outgoingEdges.size(); i++) {
+  for (int i=0; i<outgoingEdgesIds.size(); i++) {
     if (!visitedOutgoingEdges[i]) {
-      std::string targetNode = outgoingEdges[i];
+      int edgeId = outgoingEdgesIds[i];
+      std::string targetNode = ids[edgeId];
       // mark node as visitedEdges
       visitedOutgoingEdges[i] = true;
       dfs(solution, visitedNodes, visitedEdges, targetNode);
@@ -190,4 +199,5 @@ void DeBrujinGraph::dfs(
 }
 
 NodeInfo::NodeInfo() : incoming(0), outgoing(0) {
+  id = Util::getUid();
 }

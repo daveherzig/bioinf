@@ -28,6 +28,7 @@ private:
 public:
 
   static std::vector<std::string> splitSequence(std::string sequence, int length);
+  static int getUid();
 
 };
 

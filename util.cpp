@@ -17,6 +17,7 @@ Copyright 2020, David Herzig (dave.herzig@gmail.com)
 
 #include "util.h"
 
+#include <atomic>
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
@@ -71,4 +72,9 @@ std::vector<std::string> Util::splitSequence(std::string sequence, int length) {
   }
 
   return result;
+}
+
+int Util::getUid() {
+    static std::atomic<std::uint32_t> uid { 0 };
+    return ++uid;
 }

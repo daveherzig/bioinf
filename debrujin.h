@@ -24,6 +24,7 @@ Copyright 2020, David Herzig (dave.herzig@gmail.com)
 
 class NodeInfo {
 public:
+  long id;
   int incoming;
   int outgoing;
   NodeInfo();
@@ -31,12 +32,13 @@ public:
 
 class DeBrujinGraph {
 private:
-  std::map<std::string, std::vector<std::string>> graph;
+  std::map<std::string, std::vector<int>> graph;
   std::map<std::string, NodeInfo> nodes;
+  std::map<int, std::string> ids;
 
   int recursiveCallCounter;
 
-  void init(std::vector<std::string> kmers);
+  void init(std::vector<std::string> & kmers);
   void dfs(
     std::vector<std::string> & solution,
     std::map<std::string, bool> & visitedNodes,

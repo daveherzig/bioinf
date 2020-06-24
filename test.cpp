@@ -188,14 +188,14 @@ void testGenomeAssembly() {
 }
 
 void testGenomeAssemblyMinimalKMerLength() {
-  string sequence = FileReader::read("data/Vibrio_cholerae.txt");
+  //string sequence = FileReader::read("data/Vibrio_cholerae.txt");
   //string sequence = FileReader::read("data/E_coli.txt");
   //string sequence = "TGACAGGGACCCTCTTGTATAGCAGCAGTTGTGCATTTGTTGCCACTCATAGCCTTCCGATGGAGAGAAGCGCGGGCCACTAGAAGATAATGTCGGGCCCTTGAGCGCGCCAAGCCCCAGGCATTTGTAGGCAGGTTTCCT";
-  //string sequence = createRandomDNA(50000);
+  string sequence = createRandomDNA(40000);
   int kmerLength;
   int minLength = 50;
-  int maxLength = 51;
-  const int NUMBER_OF_TESTS_PER_LENGTH = 4;
+  int maxLength = 50;
+  const int NUMBER_OF_TESTS_PER_LENGTH = 1;
   for (int i=minLength; i<=maxLength; i++) {
     kmerLength = i;
     BOOST_LOG_TRIVIAL(debug) << "kmerLength: " << i;
@@ -216,6 +216,22 @@ void testGenomeAssemblyMinimalKMerLength() {
   }
 }
 
+void testGenomeAssemblyMaximalLength() {
+  int startSize = 40000;
+  const int kmerLength = 50;
+  while (true) {
+    string sequence = createRandomDNA(startSize);
+    std::vector<std::string> kmers = BioInf::kmer(sequence, kmerLength);
+    string result = BioInf::assemblyGenome(kmers);
+    if (result == sequence) {
+      BOOST_LOG_TRIVIAL(debug) << "CORRECT, sequence size: " << startSize;
+    } else {
+
+    }
+    startSize+=1000;
+  }
+}
+
 void performanceGenomeAssembly() {
   auto start = std::chrono::system_clock::now();
   string sequence = FileReader::read("data/E_coli.txt");
@@ -228,7 +244,8 @@ void performanceGenomeAssembly() {
 
 int main(int argc, char **argv) {
 
-  testGenomeAssemblyMinimalKMerLength();
+  //testGenomeAssemblyMinimalKMerLength();
+  testGenomeAssemblyMaximalLength();
   //testGenomeAssembly();
   //bruteForceGenomeAssembly();
   //performanceGenomeAssembly();
