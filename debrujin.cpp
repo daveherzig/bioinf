@@ -162,6 +162,10 @@ std::vector<std::string> DeBrujinGraph::eulerianPath() {
   recursiveCallCounter = 0;
   dfs(result, visitedNodes, visitedEdges, startNode);
 
+  // start modified DFS iterative version
+  //BOOST_LOG_TRIVIAL(debug) << "start dfs iterative...";
+  //dfs(result, visitedNodes, visitedEdges, startNode);
+
   std::reverse(result.begin(), result.end());
 
   return result;
@@ -206,6 +210,10 @@ void DeBrujinGraph::dfsIterative(
   std::map<std::string, bool> & visitedNodes,
   std::map<std::string, std::vector<bool>> & visitedEdges,
   std::string currentNode) {
+
+  std::vector<int> & outgoingEdgesIds = graph[currentNode];
+  std::vector<bool> & visitedOutgoingEdges = visitedEdges[currentNode];
+
 
 }
 

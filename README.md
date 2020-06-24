@@ -4,7 +4,10 @@ Version 0.2
 
 ## Compile Command
 ```
-g++ -std=c++14 -I D:\boost_1_73_0 bioinf.cpp filereader.cpp filewriter.cpp log.cpp test.cpp util.cpp debrujin.cpp
+git clone URL
+cd bioinf
+cmake .
+make
 ```
 
 ## Version History
@@ -16,6 +19,7 @@ g++ -std=c++14 -I D:\boost_1_73_0 bioinf.cpp filereader.cpp filewriter.cpp log.c
 - Genome Assembly
 
 0.3, July 2020
+- Iterative Version DFS
 - Levenstein Distance
 
 

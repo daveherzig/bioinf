@@ -23,6 +23,8 @@ project (${PROJECT_NAME})
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
+
+set(CMAKE_CXX_STANDARD 14)
 #set(CMAKE_CXX_FLAGS "-O3")
 
 
@@ -33,6 +35,6 @@ include_directories(${Boost_INCLUDE_DIRS})
 link_libraries(${Boost_LIBRARIES})
 
 if (Boost_FOUND)
-  add_executable(bioinf bioinf.cpp filereader.cpp filewriter.cpp log.cpp test.cpp util.cpp debrujin.cpp)
+  add_executable(bioinf bioinf.cpp filereader.cpp filewriter.cpp test.cpp util.cpp debrujin.cpp)
   target_link_libraries(bioinf ${Boost_LIBRARIES} Threads::Threads)
 endif ()
